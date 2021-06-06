@@ -32,8 +32,14 @@ public class Main {
         // Displays to the user the hand
         System.out.println("Your hand is:");
         for (int i = 0; i < hand.size(); i++) {
-            System.out.println("\t" + hand.get(i).printValue + " of " + hand.get(i).suite);
+            System.out.println("\t (" + (i + 1) + ") " + hand.get(i).printValue + " of " + hand.get(i).suite);
         }
+
+        //Explains to the user how to play.
+        System.out.println("Select the cards you would like to discard (example: \"1, 2, 4\").");
+        System.out.println("Type \"hold\" to hold");
+
+
 
     }
 }
