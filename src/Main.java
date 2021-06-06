@@ -42,32 +42,37 @@ public class Main {
         //Explains to the user how to play
         System.out.println("Select the cards you would like to discard (example: \"1, 2, 4\").");
         System.out.println("Type \"hold\" to hold");
+        boolean notAccepted = true;
+        while (notAccepted) {
+            // Reads and deciphers the user's input
+            String input = scanner.nextLine();
+            if (!input.toLowerCase().equals("hold")) {
 
-        // Reads and deciphers the user's input
-        String input = scanner.nextLine();
-        if (!input.toLowerCase().equals("hold")) {
-            try {
-                String[] split = input.split(",");
-                // Hash set used to deal with duplicates.
-                HashSet<Integer> toSwap = new HashSet<>();
+                try {
+                    String[] split = input.split(",");
+                    // Hash set used to deal with duplicates.
+                    HashSet<Integer> toSwap = new HashSet<>();
 
-                // Gets the index of each card to be swapped
-                for (int i = 0; i < split.length; i++) {
-                    toSwap.add(Integer.parseInt(split[i].trim()) - 1);
+                    // Gets the index of each card to be swapped
+                    for (int i = 0; i < split.length; i++) {
+                        toSwap.add(Integer.parseInt(split[i].trim()) - 1);
+                    }
+
+                    // Return the cards from the hand to the deck
+                    for (int temp : toSwap) {
+                        deck.add(hand.get(temp));
+                    }
+
+                    // Replaces the cards in the hand
+                    for (int temp : toSwap) {
+                        hand.set(temp, deck.remove(rng.nextInt(deck.size())));
+                    }
+                    notAccepted = false;
                 }
-
-                // Return the cards from the hand to the deck
-                for (int temp : toSwap) {
-                    deck.add(hand.get(temp));
+                // Happens when the user inputs something that isn't recognized.
+                catch (Exception e) {
+                    System.out.println("Invalid input.  Try again.");
                 }
-
-                // Replaces the cards in the hand
-                for (int temp : toSwap) {
-                    hand.set(temp, deck.remove(rng.nextInt(deck.size())));
-                }
-
-            } catch (Exception e) {
-                System.out.println("Invalid input");
             }
 
         }
@@ -77,5 +82,10 @@ public class Main {
         for (int i = 0; i < hand.size(); i++) {
             System.out.println("\t" + hand.get(i).printValue + " of " + hand.get(i).suite);
         }
+
+    }
+
+    public static int scoreHand(LinkedList<Card> hand) {
+        return 0;
     }
 }
