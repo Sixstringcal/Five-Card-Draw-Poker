@@ -73,6 +73,8 @@ public class Main {
                 catch (Exception e) {
                     System.out.println("Invalid input.  Try again.");
                 }
+            } else {
+                notAccepted = false;
             }
 
         }
@@ -83,9 +85,11 @@ public class Main {
             System.out.println("\t" + hand.get(i).printValue + " of " + hand.get(i).suite);
         }
 
+        // Informs the user what their score is
+        System.out.println("You got a " + scoreHand(hand) + "!");
     }
 
-    public static int scoreHand(LinkedList<Card> hand) {
-        return 0;
+    public static String scoreHand(LinkedList<Card> hand) {
+        return "";
     }
 }
