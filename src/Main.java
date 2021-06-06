@@ -29,5 +29,11 @@ public class Main {
         }
 
 
+        // Displays to the user the hand
+        System.out.println("Your hand is:");
+        for (int i = 0; i < hand.size(); i++) {
+            System.out.println("\t" + hand.get(i).printValue + " of " + hand.get(i).suite);
+        }
+
     }
 }
