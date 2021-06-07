@@ -90,6 +90,225 @@ public class Main {
     }
 
     public static String scoreHand(LinkedList<Card> hand) {
-        return "";
+        LinkedList<Integer> handValues = getValues(hand);
+
+        // Checks for royal flush
+        if (allSameSuite(hand) && containsValues(handValues, new int[]{1, 10, 11, 12, 13})) {
+            return "royal flush";
+        }
+
+        // Checks for a straight flush
+        else if (allSameSuite(hand) && checkForStraight(handValues)) {
+            return "straight flush";
+        }
+
+        // Checks for a four-of-a-kind
+        else if (isNOfAKind(handValues, 4)) {
+            return "four-of-a-kind";
+        }
+
+        // Checks for a full house
+        else if (isFullHouse(handValues)) {
+            return "full house";
+        }
+
+        // Checks for a flush
+        else if (allSameSuite(hand)) {
+            return "flush";
+        }
+
+        // Checks for a straight
+        else if (checkForStraight(handValues)) {
+            return "straight";
+        }
+
+        // Checks for three-of-a-kind
+        else if (isNOfAKind(handValues, 3)) {
+            return "three-of-a-kind";
+        }
+
+        // Checks for a two-pair
+        else if (isTwoPair(handValues)) {
+            return "two-pair";
+        }
+
+        // Checks for a pair
+        else if (isNOfAKind(handValues, 2)) {
+            return "pair";
+        }
+
+        // If it matches none of the others, it returns an "X" high
+        return getMax(handValues) + "-high";
     }
+
+    /**
+     * Checks that all cards in a set are the same suite
+     *
+     * @param hand - the set of cards to check their suite.
+     * @return - true if all cards are the same suite.  False otherwise
+     */
+    public static boolean allSameSuite(LinkedList<Card> hand) {
+        String firstSuite = hand.getFirst().suite;
+        for (Card temp : hand) {
+            if (!temp.suite.equals(firstSuite)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Gets a LinkedList of all of the values of the hand
+     *
+     * @param hand - the hand of cards
+     * @return - the values of all of the cards in the form of a LinkedList
+     */
+    public static LinkedList<Integer> getValues(LinkedList<Card> hand) {
+        LinkedList<Integer> values = new LinkedList<>();
+        for (Card temp : hand) {
+            values.add(temp.value);
+        }
+        return values;
+    }
+
+    /**
+     * Checks if every value from values is contained in cardValues
+     *
+     * @param cardValues - the values of the cards in this set
+     * @param values     - the values you want to check if the cards have
+     * @return - true if every value is present in cardValues.  False otherwise
+     */
+    public static boolean containsValues(LinkedList<Integer> cardValues, int[] values) {
+        for (int temp : values) {
+            if (!cardValues.contains(temp)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * Checks if there is any straight sequence
+     *
+     * @param cardValues - the values of each card
+     * @return - true if there is a straight.  False otherwise
+     */
+    public static boolean checkForStraight(LinkedList<Integer> cardValues) {
+        if (containsValues(cardValues, new int[]{1, 10, 11, 12, 13})) {
+            return true;
+        }
+        for (int i = 1; i < 10; i++) {
+            if (containsValues(cardValues, new int[]{i, i + 1, i + 2, i + 3, i + 4})) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * Checks if it is an "n" of a kind
+     *
+     * @param cardValues - the values of the cards
+     * @param n          - the number of kind it is.  For example "four of a kind"
+     *                   would be n = 4
+     * @return - true if it is a "n" of a kind.  False otherwise
+     */
+    public static boolean isNOfAKind(LinkedList<Integer> cardValues, int n) {
+        for (int i = 0; i + n <= cardValues.size(); i++) {
+            int total = 1;
+            for (int j = i + 1; j < cardValues.size(); j++) {
+                if (cardValues.get(i) == cardValues.get(j)) {
+                    total++;
+                }
+            }
+            if (total >= n) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the cards make a full house.  It is assumed that it is not a
+     * four-of-a-kind, as that would score higher.  Because of that, if there
+     * are only two unique values, it is a full house.
+     *
+     * @param cardValues - the values of the cards
+     * @return - true if it is a full house.  False otherwise
+     */
+    public static boolean isFullHouse(LinkedList<Integer> cardValues) {
+        int value1 = cardValues.getFirst();
+        int value2 = -1;
+        for (int i = 1; i < cardValues.size(); i++) {
+            if (value1 != cardValues.get(i)) {
+                if (value2 == -1) {
+                    value2 = cardValues.get(i);
+                } else if (value2 != cardValues.get(i)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks if the hand is a two-pair.  Since full house, four-of-a-kind, and
+     * three-of-a-kind have already been checked (as they're higher value),
+     * if there are no more than 3 unique values, it is a two-pair
+     *
+     * @param cardValues - the values of the cards in the hand
+     * @return - true if it is a two-pair.  False otherwise
+     */
+    public static boolean isTwoPair(LinkedList<Integer> cardValues) {
+        int value1 = cardValues.getFirst();
+        int value2 = -1;
+        int value3 = -1;
+        for (int i = 1; i < cardValues.size(); i++) {
+            if (value1 != cardValues.get(i)) {
+                if (value2 == -1) {
+                    value2 = cardValues.get(i);
+                } else if (value2 != cardValues.get(i)) {
+                    if (value3 == -1) {
+                        value3 = cardValues.get(i);
+                    } else if (value3 != cardValues.get(i)) {
+                        return false;
+
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * Gets the maximum value in cardValues
+     *
+     * @param cardValues - the values of the cards in the hand
+     * @return - the maximum value in cardValues
+     */
+    public static String getMax(LinkedList<Integer> cardValues) {
+        int max = 0;
+        for (int temp : cardValues) {
+            if (temp > max) {
+                max = temp;
+            }
+        }
+        switch (max) {
+            case 1:
+                return "ace";
+            case 11:
+                return "jack";
+            case 12:
+                return "queen";
+            case 13:
+                return "king";
+            default:
+                return max + "";
+        }
+    }
+
+
 }
